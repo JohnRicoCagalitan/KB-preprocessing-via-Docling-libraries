@@ -4,9 +4,9 @@ from pathlib import Path
 from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.pipeline_options import PdfPipelineOptions
-from pypdf import PdfReader
+from pypdf import PdfReader, PdfWriter
 
-def process_heavy_pdfs(input_folder, output_folder):
+def process_heavy_pdfs_isolated(input_folder, output_folder):
     # 1. Configuration
     pipeline_options = PdfPipelineOptions()
     pipeline_options.do_ocr = False
@@ -27,32 +27,41 @@ def process_heavy_pdfs(input_folder, output_folder):
     for pdf_file in input_path.glob("*.pdf"):
         try:
             print(f"Processing: {pdf_file.name}")
-            
-            # 2. Get the total number of pages
             reader = PdfReader(pdf_file)
             total_pages = len(reader.pages)
-            print(f"Found {total_pages} pages. Converting sequentially...")
-            
             full_markdown = []
             
-            # 3. Process every page individually
-            for page_num in range(1, total_pages + 1):
+            # 2. Process every page by creating a temporary 1-page PDF
+            for i in range(total_pages):
+                page_num = i + 1
+                temp_filename = f"temp_page_{page_num}.pdf"
+                
                 try:
-                    # Isolate processing to a single page
-                    result = converter.convert(pdf_file, page_range=[page_num])
+                    # Create a 1-page PDF file
+                    writer = PdfWriter()
+                    writer.add_page(reader.pages[i])
+                    with open(temp_filename, "wb") as f:
+                        writer.write(f)
+                    
+                    # Convert the 1-page file
+                    result = converter.convert(temp_filename)
                     page_md = result.document.export_to_markdown()
                     full_markdown.append(page_md)
+                    
                     print(f"  Page {page_num}/{total_pages} successful.")
                     
-                    # 4. Force Memory Cleanup
+                    # Cleanup after page
+                    if os.path.exists(temp_filename):
+                        os.remove(temp_filename)
                     del result
                     gc.collect()
                     
                 except Exception as page_err:
                     print(f"  Skipped Page {page_num} due to error: {page_err}")
-                    full_markdown.append(f"\n> [MISSING CONTENT: Page {page_num} failed to process]\n")
-
-            # 5. Save the final Markdown file
+                    if os.path.exists(temp_filename):
+                        os.remove(temp_filename)
+            
+            # 3. Save the final combined Markdown
             output_file = output_path / f"{pdf_file.stem}.md"
             with open(output_file, "w", encoding="utf-8") as f:
                 f.write(f"--- \nsource: {pdf_file.name}\n---\n\n")
@@ -66,4 +75,4 @@ def process_heavy_pdfs(input_folder, output_folder):
 if __name__ == "__main__":
     SOURCE_DIR = "./raw_policies"
     OUTPUT_DIR = "./processed_kb"
-    process_heavy_pdfs(SOURCE_DIR, OUTPUT_DIR)
+    process_heavy_pdfs_isolated(SOURCE_DIR, OUTPUT_DIR)
