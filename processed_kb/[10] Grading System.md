@@ -32,10 +32,6 @@ An Incomplete (INC) grade may be given when a student fails to complete some cou
 
 ## AF - Failure due to Absences
 
-## Grading System
-
-## Knowledge as of A.Y. 2025-2026
-
 An AF (Failure due to Absences) is a grade remark assigned to a student who exceeds the maximum number of allowable absences in a course. When a student accumulates absences beyond the limit set by  university policy, the instructor may  record  an  AF  regardless  of  the  student's  academic performance in other course requirements.
 
 Receiving  an  AF  indicates  that  the  student  did  not  meet  the  attendance  requirements  necessary  to complete  the  course  successfully.  This  remark  is  treated  as  a  failing  mark  for  the  course  and  may affect the student's academic standing and grade point average.
@@ -61,9 +57,8 @@ In some courses, grading may follow a structured weight distribution similar to 
 | Engagement/Participation | 10.50%   |
 | Semi-Final Exam          | 7.00%    |
 | Final Exam               | 30.00%   |
-
-| Quizzes   | 35.00%   |
-|-----------|----------|
+| Quizzes                  | 35.00%   |
+|--------------------------|----------|
 
 The total of all grading components equals 100% of the final course grade. The exact components and their corresponding weights may vary depending on the course and instructor.
 
