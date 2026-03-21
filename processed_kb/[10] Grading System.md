@@ -86,7 +86,7 @@ Letter grades are converted into numerical grade points before computing the QPI
 
 Letter grades are converted into numerical grade points before computing the QPI.
 
-<!-- formula-not-decoded -->
+$$QPI = \frac{\text{Total Quality Points}}{\text{Total Number of Units}}$$
 
 ## Where:
 
